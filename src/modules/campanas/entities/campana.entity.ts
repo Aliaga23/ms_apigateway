@@ -8,9 +8,9 @@ export class Campana {
   @Field()
   nombre: string;
 
-  @Field()
-  creado_en: Date;
+  @Field({ nullable: true })
+  user_id?: string;
 
   @Field({ nullable: true })
-  actualizado_en?: Date;
+  creado_en?: string;
 }

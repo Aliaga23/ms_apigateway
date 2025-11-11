@@ -12,8 +12,17 @@ export class RespuestaAnalytics {
   pregunta_texto: string;
 
   @Field()
+  encuesta_id: string;
+
+  @Field()
   encuesta_nombre: string;
 
   @Field()
-  user_id: string;
+  campana: string;
+
+  @Field()
+  canal: string;
+
+  @Field()
+  entrega_id: string;
 }

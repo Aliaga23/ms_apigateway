@@ -8,10 +8,10 @@ export class CreateEncuestaInput {
   @MinLength(2)
   nombre: string;
 
-  @Field({ nullable: true })
+  @Field()
   @IsString()
-  @IsOptional()
-  descripcion?: string;
+  @MinLength(1)
+  descripcion: string;
 
   @Field({ defaultValue: true })
   @IsBoolean()
@@ -27,4 +27,6 @@ export class CreateEncuestaInput {
   @IsString()
   @IsOptional()
   canalId?: string;
+
+ 
 }

@@ -20,12 +20,6 @@ export class Encuesta {
   @Field({ nullable: true })
   canalId?: string;
 
-  @Field()
-  usuarioId: string;
-
-  @Field()
-  creado_en: Date;
-
   @Field({ nullable: true })
-  actualizado_en?: Date;
+  creado_en?: string;
 }

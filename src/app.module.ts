@@ -3,6 +3,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ConfigModule } from '@nestjs/config';
 import { join } from 'path';
+import { GraphQLJSONObject } from 'graphql-type-json';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UsuariosModule } from './modules/usuarios/usuarios.module';
@@ -32,6 +33,7 @@ import { MlAnalysisModule } from './modules/ml-analysis/ml-analysis.module';
       sortSchema: true,
       playground: true,
       context: ({ req }) => ({ req }),
+      resolvers: { JSONObject: GraphQLJSONObject },
     }),
     UsuariosModule,
     PlanesModule,

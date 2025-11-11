@@ -19,7 +19,7 @@ export class CanalesService {
   async createCanal(createCanalInput: CreateCanalInput): Promise<Canal> {
     try {
       const response = await firstValueFrom(
-        this.httpService.post(`${this.msNestUrl}/canal`, createCanalInput),
+        this.httpService.post(`${this.msNestUrl}/api/canal`, createCanalInput),
       );
       return response.data;
     } catch (error) {
@@ -33,7 +33,7 @@ export class CanalesService {
   async getAllCanales(): Promise<Canal[]> {
     try {
       const response = await firstValueFrom(
-        this.httpService.get(`${this.msNestUrl}/canal`),
+        this.httpService.get(`${this.msNestUrl}/api/canal`),
       );
       return response.data;
     } catch (error) {
@@ -47,7 +47,7 @@ export class CanalesService {
   async getCanalById(id: string): Promise<Canal> {
     try {
       const response = await firstValueFrom(
-        this.httpService.get(`${this.msNestUrl}/canal/${id}`),
+        this.httpService.get(`${this.msNestUrl}/api/canal/${id}`),
       );
       return response.data;
     } catch (error) {
@@ -61,7 +61,7 @@ export class CanalesService {
   async updateCanal(id: string, updateCanalInput: UpdateCanalInput): Promise<Canal> {
     try {
       const response = await firstValueFrom(
-        this.httpService.patch(`${this.msNestUrl}/canal/${id}`, updateCanalInput),
+        this.httpService.patch(`${this.msNestUrl}/api/canal/${id}`, updateCanalInput),
       );
       return response.data;
     } catch (error) {
@@ -75,7 +75,7 @@ export class CanalesService {
   async deleteCanal(id: string): Promise<boolean> {
     try {
       await firstValueFrom(
-        this.httpService.delete(`${this.msNestUrl}/canal/${id}`),
+        this.httpService.delete(`${this.msNestUrl}/api/canal/${id}`),
       );
       return true;
     } catch (error) {

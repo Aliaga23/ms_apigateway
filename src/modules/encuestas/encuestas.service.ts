@@ -14,23 +14,42 @@ export class EncuestasService {
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {
-    this.msNestUrl = this.configService.get<string>('MS_NEST_URL') || 'http://localhost:3001';
+    this.msNestUrl = this.configService.get<string>('MS_NEST_URL') || 'https://encuestas.sw2ficct.lat';
+  }
+
+  // Mapear campañaId (con ñ del backend) a campanaId (sin ñ para GraphQL)
+  private mapEncuesta(data: any): Encuesta {
+    return {
+      ...data,
+      campanaId: data.campañaId || data.campanaId,
+    };
+  }
+
+  // Mapear input: campanaId (sin ñ de GraphQL) → campañaId (con ñ para backend)
+  private mapInputToBackend(input: any): any {
+    const mapped = { ...input };
+    if (mapped.campanaId !== undefined) {
+      mapped.campañaId = mapped.campanaId;
+      delete mapped.campanaId;
+    }
+    return mapped;
   }
 
   async createEncuesta(
     createEncuestaInput: CreateEncuestaInput,
     token: string,
   ): Promise<Encuesta> {
+    const mappedInput = this.mapInputToBackend(createEncuestaInput);
     const response = await firstValueFrom(
       this.httpService.post(
         `${this.msNestUrl}/api/encuesta`,
-        createEncuestaInput,
+        mappedInput,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
       ),
     );
-    return response.data;
+    return this.mapEncuesta(response.data);
   }
 
   async findAll(token: string): Promise<Encuesta[]> {
@@ -39,7 +58,7 @@ export class EncuestasService {
         headers: { Authorization: `Bearer ${token}` },
       }),
     );
-    return response.data;
+    return response.data.map((encuesta: any) => this.mapEncuesta(encuesta));
   }
 
   async findOne(id: string, token: string): Promise<Encuesta> {
@@ -48,7 +67,7 @@ export class EncuestasService {
         headers: { Authorization: `Bearer ${token}` },
       }),
     );
-    return response.data;
+    return this.mapEncuesta(response.data);
   }
 
   async updateEncuesta(
@@ -56,16 +75,17 @@ export class EncuestasService {
     updateEncuestaInput: UpdateEncuestaInput,
     token: string,
   ): Promise<Encuesta> {
+    const mappedInput = this.mapInputToBackend(updateEncuestaInput);
     const response = await firstValueFrom(
       this.httpService.patch(
         `${this.msNestUrl}/api/encuesta/${id}`,
-        updateEncuestaInput,
+        mappedInput,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
       ),
     );
-    return response.data;
+    return this.mapEncuesta(response.data);
   }
 
   async removeEncuesta(id: string, token: string): Promise<boolean> {

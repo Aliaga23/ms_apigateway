@@ -6,20 +6,14 @@ export class Entrega {
   id: string;
 
   @Field({ nullable: true })
-  enviado_en?: Date;
+  enviado_en?: string;
 
   @Field({ nullable: true })
-  respondido_en?: Date;
+  respondido_en?: string;
 
   @Field()
   encuestaId: string;
 
   @Field()
   destinatarioId: string;
-
-  @Field()
-  creado_en: Date;
-
-  @Field({ nullable: true })
-  actualizado_en?: Date;
 }

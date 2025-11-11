@@ -11,12 +11,6 @@ export class OpcionEncuesta {
   @Field({ nullable: true })
   valor?: string;
 
-  @Field()
-  preguntaId: string;
-
-  @Field()
-  creado_en: Date;
-
   @Field({ nullable: true })
-  actualizado_en?: Date;
+  preguntaId?: string;
 }

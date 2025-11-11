@@ -20,9 +20,6 @@ export class Pregunta {
   @Field()
   tipo_preguntaId: string;
 
-  @Field()
-  creado_en: Date;
-
   @Field({ nullable: true })
-  actualizado_en?: Date;
+  creado_en?: string;
 }

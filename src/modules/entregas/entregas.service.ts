@@ -3,8 +3,11 @@ import { HttpService } from '@nestjs/axios';
 import { ConfigService } from '@nestjs/config';
 import { firstValueFrom } from 'rxjs';
 import { Entrega } from './entities/entrega.entity';
+import { EntregaPreguntasResponse } from './entities/entrega-preguntas-response.entity';
 import { CreateEntregaInput } from './dto/create-entrega.input';
 import { UpdateEntregaInput } from './dto/update-entrega.input';
+import { BulkAudioCreateResponse, BulkAudioListResponse } from './entities/bulk-audio-response.entity';
+import { CreateBulkEntregaInput } from './dto/create-bulk-entrega.input';
 
 @Injectable()
 export class EntregasService {
@@ -14,7 +17,7 @@ export class EntregasService {
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {
-    this.msNestUrl = this.configService.get<string>('MS_NEST_URL') || 'http://localhost:3001';
+    this.msNestUrl = this.configService.get<string>('MS_NEST_URL') || 'https://encuestas.sw2ficct.lat';
   }
 
   async create(input: CreateEntregaInput, token: string): Promise<Entrega> {
@@ -60,5 +63,79 @@ export class EntregasService {
       }),
     );
     return true;
+  }
+
+  // Endpoint público: obtener preguntas con opciones de una entrega
+  async getPreguntasConOpciones(entregaId: string): Promise<EntregaPreguntasResponse> {
+    const response = await firstValueFrom(
+      this.httpService.get(`${this.msNestUrl}/api/entrega/${entregaId}/preguntas`),
+    );
+    return response.data;
+  }
+
+  // Endpoint público: guardar respuestas de una entrega
+  async guardarRespuestas(
+    entregaId: string,
+    respuestas: Array<{ preguntaId: string; opcionId?: string; texto?: string }>,
+  ): Promise<any> {
+    const response = await firstValueFrom(
+      this.httpService.post(
+        `${this.msNestUrl}/api/entrega/${entregaId}/respuestas`,
+        { respuestas },
+      ),
+    );
+    return response.data;
+  }
+
+  // Generar entregas masivas para OCR con PDF
+  async createBulkOCR(
+    encuestaId: string,
+    cantidad: number,
+    token: string,
+  ): Promise<Buffer> {
+    const response = await firstValueFrom(
+      this.httpService.post(
+        `${this.msNestUrl}/api/entrega/bulk-ocr`,
+        { encuestaId, cantidad },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+          responseType: 'arraybuffer',
+        },
+      ),
+    );
+    return Buffer.from(response.data);
+  }
+
+  // Generar entregas masivas para Audio
+  async createBulkAudio(
+    input: CreateBulkEntregaInput,
+    token: string,
+  ): Promise<BulkAudioCreateResponse> {
+    const response = await firstValueFrom(
+      this.httpService.post(
+        `${this.msNestUrl}/api/entrega/bulk-audio`,
+        input,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      ),
+    );
+    return response.data;
+  }
+
+  // Obtener todas las entregas de Audio de una encuesta
+  async getBulkAudioEntregas(
+    encuestaId: string,
+    token: string,
+  ): Promise<BulkAudioListResponse> {
+    const response = await firstValueFrom(
+      this.httpService.get(
+        `${this.msNestUrl}/api/entrega/bulk-audio/${encuestaId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      ),
+    );
+    return response.data;
   }
 }

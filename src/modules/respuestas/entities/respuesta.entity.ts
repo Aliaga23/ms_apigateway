@@ -11,8 +11,8 @@ export class Respuesta {
   @Field(() => Int, { nullable: true })
   numero?: number;
 
-  @Field()
-  recibido_en: Date;
+  @Field({ nullable: true })
+  recibido_en?: string;
 
   @Field()
   entregaId: string;
@@ -22,10 +22,4 @@ export class Respuesta {
 
   @Field({ nullable: true })
   opcionEncuestaId?: string;
-
-  @Field()
-  creado_en: Date;
-
-  @Field({ nullable: true })
-  actualizado_en?: Date;
 }

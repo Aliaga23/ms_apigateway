@@ -14,7 +14,7 @@ export class RespuestasService {
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {
-    this.msNestUrl = this.configService.get<string>('MS_NEST_URL') || 'http://localhost:3001';
+    this.msNestUrl = this.configService.get<string>('MS_NEST_URL') || 'https://encuestas.sw2ficct.lat';
   }
 
   async create(input: CreateRespuestaInput, token: string): Promise<Respuesta> {

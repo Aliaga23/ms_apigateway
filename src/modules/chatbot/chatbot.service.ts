@@ -13,14 +13,17 @@ export class ChatbotService {
     private readonly httpService: HttpService,
     private readonly configService: ConfigService,
   ) {
-    this.msNestUrl = this.configService.get<string>('MS_NEST_URL') || 'https://encuestas.sw2ficct.lat/api';
+    this.msNestUrl = this.configService.get<string>('MS_NEST_URL') || 'https://encuestas.sw2ficct.lat';
   }
 
   async sendMessage(input: ChatbotRequestInput, token: string): Promise<ChatbotResponse> {
     const response = await firstValueFrom(
       this.httpService.post(
-        `${this.msNestUrl}/chatbot/message`,
-        input,
+        `${this.msNestUrl}/api/chatbot/chat`,
+        {
+          mensaje: input.message,
+          sessionId: input.sessionId
+        },
         {
           headers: { Authorization: `Bearer ${token}` }
         }
@@ -32,12 +35,15 @@ export class ChatbotService {
   async deleteSession(sessionId: string, token: string): Promise<ChatbotResponse> {
     const response = await firstValueFrom(
       this.httpService.delete(
-        `${this.msNestUrl}/chatbot/session/${sessionId}`,
+        `${this.msNestUrl}/api/chatbot/session/${sessionId}`,
         {
           headers: { Authorization: `Bearer ${token}` }
         }
       )
     );
-    return response.data;
+    return {
+      sessionId,
+      message: response.data.message,
+    };
   }
 }

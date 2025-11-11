@@ -10,11 +10,26 @@ type AnomalyResult {
   texto_respuesta: String!
 }
 
+type BulkAudioCreateResponse {
+  cantidad: Int!
+  encuestaId: String!
+  entregas: [EntregaResumen!]!
+  message: String!
+}
+
+type BulkAudioListResponse {
+  encuesta: EncuestaInfoAudio!
+  entregas: [EntregaDetalle!]!
+  entregasPendientes: Int!
+  entregasRespondidas: Int!
+  totalEntregas: Int!
+}
+
 type Campana {
-  actualizado_en: DateTime
-  creado_en: DateTime!
+  creado_en: String
   id: ID!
   nombre: String!
+  user_id: String
 }
 
 type Canal {
@@ -28,9 +43,11 @@ input ChatbotRequestInput {
 }
 
 type ChatbotResponse {
-  data: String
-  message: String!
-  success: Boolean!
+  action: String
+  message: String
+  response: String
+  result: JSONObject
+  sessionId: String!
 }
 
 type ClassificationResult {
@@ -51,6 +68,11 @@ type ClusterAnalysis {
   tamano: Int!
 }
 
+input CreateBulkEntregaInput {
+  cantidad: Int!
+  encuestaId: String!
+}
+
 input CreateCampanaInput {
   nombre: String!
 }
@@ -69,7 +91,7 @@ input CreateEncuestaInput {
   activo: Boolean! = true
   campanaId: String
   canalId: String
-  descripcion: String
+  descripcion: String!
   nombre: String!
 }
 
@@ -131,24 +153,21 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 type Destinatario {
-  actualizado_en: DateTime
-  creado_en: DateTime!
   email: String
   id: ID!
   nombre: String!
   telefono: String
+  user_id: String
 }
 
 type Encuesta {
   activo: Boolean!
-  actualizado_en: DateTime
   campanaId: String
   canalId: String
-  creado_en: DateTime!
+  creado_en: String
   descripcion: String
   id: ID!
   nombre: String!
-  usuarioId: String!
 }
 
 type EncuestaAnalytics {
@@ -161,14 +180,43 @@ type EncuestaAnalytics {
   total_preguntas: Int!
 }
 
+type EncuestaInfo {
+  descripcion: String
+  id: ID!
+  nombre: String!
+}
+
+type EncuestaInfoAudio {
+  descripcion: String!
+  id: String!
+  nombre: String!
+}
+
 type Entrega {
-  actualizado_en: DateTime
-  creado_en: DateTime!
   destinatarioId: String!
   encuestaId: String!
-  enviado_en: DateTime
+  enviado_en: String
   id: ID!
-  respondido_en: DateTime
+  respondido_en: String
+}
+
+type EntregaDetalle {
+  enviado_en: String!
+  estado: String!
+  id: String!
+  respondido_en: String
+  totalRespuestas: Int!
+}
+
+type EntregaPreguntasResponse {
+  encuesta: EncuestaInfo!
+  entregaId: ID!
+  preguntas: [PreguntaConOpciones!]!
+}
+
+type EntregaResumen {
+  enviado_en: String!
+  id: String!
 }
 
 type GPTAnalysisResult {
@@ -177,6 +225,16 @@ type GPTAnalysisResult {
   gpt_error: String
   note: String
 }
+
+input GuardarRespuestasInput {
+  entregaId: String!
+  respuestas: [RespuestaItemInput!]!
+}
+
+"""
+The `JSONObject` scalar type represents JSON objects as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSONObject
 
 type KMeansResult {
   categoria_encuesta: String!
@@ -207,6 +265,8 @@ type Mutation {
   analyzeKMeans(surveyData: String!): KMeansResult!
   analyzeText(respuestas: [TextResponseInput!]!): TextAnalysisResult!
   cancelSuscripcion(id: String!): Boolean!
+  createBulkAudio(input: CreateBulkEntregaInput!): BulkAudioCreateResponse!
+  createBulkOCR(cantidad: Float!, encuestaId: String!): String!
   createCampana(createCampanaInput: CreateCampanaInput!): Campana!
   createCanal(createCanalInput: CreateCanalInput!): Canal!
   createDestinatario(createDestinatarioInput: CreateDestinatarioInput!): Destinatario!
@@ -223,6 +283,7 @@ type Mutation {
   deletePlan(id: String!): Boolean!
   deleteTipoPregunta(id: String!): Boolean!
   deleteUsuario(id: String!): Boolean!
+  guardarRespuestas(input: GuardarRespuestasInput!): Boolean!
   login(loginInput: LoginInput!): LoginResponse!
   predictText(texto: String!): String!
   register(createUsuarioInput: CreateUsuarioInput!): Usuario!
@@ -250,10 +311,8 @@ type Mutation {
 }
 
 type OpcionEncuesta {
-  actualizado_en: DateTime
-  creado_en: DateTime!
   id: ID!
-  preguntaId: String!
+  preguntaId: String
   texto: String!
   valor: String
 }
@@ -268,8 +327,7 @@ type Plan {
 }
 
 type Pregunta {
-  actualizado_en: DateTime
-  creado_en: DateTime!
+  creado_en: String
   encuestaId: String!
   id: ID!
   obligatorio: Boolean!
@@ -278,12 +336,22 @@ type Pregunta {
   tipo_preguntaId: String!
 }
 
+type PreguntaConOpciones {
+  id: ID!
+  obligatorio: Boolean!
+  opciones: [OpcionEncuesta!]
+  orden: Int!
+  texto: String!
+  tipo: TipoPreguntaInfo!
+}
+
 type PreguntaEncuestaAnalytics {
   encuesta: String!
 }
 
 type Query {
   analyticsUsuarios: UsuariosResponse!
+  bulkAudioEntregas(encuestaId: String!): BulkAudioListResponse!
   campana(id: String!): Campana!
   campanas: [Campana!]!
   canal(id: String!): Canal!
@@ -293,6 +361,7 @@ type Query {
   encuesta(id: String!): Encuesta!
   encuestas: [Encuesta!]!
   entrega(id: String!): Entrega!
+  entregaPreguntas(entregaId: String!): EntregaPreguntasResponse!
   entregas: [Entrega!]!
   misSuscripciones(limit: Float! = 10, page: Float! = 1): [Suscripcion!]!
   mlHealthCheck: String!
@@ -308,10 +377,10 @@ type Query {
   preguntasByEncuesta(encuestaId: String!): [Pregunta!]!
   respuesta(id: String!): Respuesta!
   respuestas: [Respuesta!]!
-  respuestasByUsuarioEncuesta(encuestaId: String!, userId: String!): String!
-  respuestasCompletar(encuestaId: String, userId: String): [RespuestaAnalytics!]!
-  respuestasCompletarByCampana(campanaId: String!): [RespuestaAnalytics!]!
-  respuestasOpcionesByCampana(campanaId: String!): String!
+  respuestasByUsuarioEncuesta(encuestaId: String!, userId: String!): JSONObject!
+  respuestasCompletar(encuestaId: String, userId: String): JSONObject
+  respuestasCompletarByCampana(campanaId: String!): JSONObject
+  respuestasOpcionesByCampana(campanaId: String!): JSONObject
   suscripcion(id: String!): Suscripcion!
   suscripciones(limit: Float! = 10, page: Float! = 1): [Suscripcion!]!
   textModelStatus: String!
@@ -324,23 +393,20 @@ type Query {
 }
 
 type Respuesta {
-  actualizado_en: DateTime
-  creado_en: DateTime!
   entregaId: String!
   id: ID!
   numero: Int
   opcionEncuestaId: String
   preguntaId: String!
-  recibido_en: DateTime!
+  recibido_en: String
   texto: String
 }
 
-type RespuestaAnalytics {
-  encuesta_nombre: String!
-  pregunta_texto: String!
-  respuesta_id: String!
-  texto_respuesta: String
-  user_id: String!
+input RespuestaItemInput {
+  imagen: String
+  opcionId: String
+  preguntaId: String!
+  texto: String
 }
 
 type Suscripcion {
@@ -370,6 +436,11 @@ input TextResponseInput {
 }
 
 type TipoPregunta {
+  id: ID!
+  nombre: String!
+}
+
+type TipoPreguntaInfo {
   id: ID!
   nombre: String!
 }

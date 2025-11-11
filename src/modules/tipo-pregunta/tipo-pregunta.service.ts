@@ -19,7 +19,7 @@ export class TipoPreguntaService {
   async createTipoPregunta(createTipoPreguntaInput: CreateTipoPreguntaInput): Promise<TipoPregunta> {
     try {
       const response = await firstValueFrom(
-        this.httpService.post(`${this.msNestUrl}/tipo-pregunta`, createTipoPreguntaInput),
+        this.httpService.post(`${this.msNestUrl}/api/tipo-pregunta`, createTipoPreguntaInput),
       );
       return response.data;
     } catch (error) {
@@ -33,7 +33,7 @@ export class TipoPreguntaService {
   async getAllTiposPreguntas(): Promise<TipoPregunta[]> {
     try {
       const response = await firstValueFrom(
-        this.httpService.get(`${this.msNestUrl}/tipo-pregunta`),
+        this.httpService.get(`${this.msNestUrl}/api/tipo-pregunta`),
       );
       return response.data;
     } catch (error) {
@@ -47,7 +47,7 @@ export class TipoPreguntaService {
   async getTipoPreguntaById(id: string): Promise<TipoPregunta> {
     try {
       const response = await firstValueFrom(
-        this.httpService.get(`${this.msNestUrl}/tipo-pregunta/${id}`),
+        this.httpService.get(`${this.msNestUrl}/api/tipo-pregunta/${id}`),
       );
       return response.data;
     } catch (error) {
@@ -61,7 +61,7 @@ export class TipoPreguntaService {
   async updateTipoPregunta(id: string, updateTipoPreguntaInput: UpdateTipoPreguntaInput): Promise<TipoPregunta> {
     try {
       const response = await firstValueFrom(
-        this.httpService.patch(`${this.msNestUrl}/tipo-pregunta/${id}`, updateTipoPreguntaInput),
+        this.httpService.patch(`${this.msNestUrl}/api/tipo-pregunta/${id}`, updateTipoPreguntaInput),
       );
       return response.data;
     } catch (error) {
@@ -75,7 +75,7 @@ export class TipoPreguntaService {
   async deleteTipoPregunta(id: string): Promise<boolean> {
     try {
       await firstValueFrom(
-        this.httpService.delete(`${this.msNestUrl}/tipo-pregunta/${id}`),
+        this.httpService.delete(`${this.msNestUrl}/api/tipo-pregunta/${id}`),
       );
       return true;
     } catch (error) {

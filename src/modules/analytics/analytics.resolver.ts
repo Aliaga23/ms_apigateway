@@ -1,4 +1,5 @@
 import { Resolver, Query, Args } from '@nestjs/graphql';
+import { GraphQLJSONObject } from 'graphql-type-json';
 import { AnalyticsService } from './analytics.service';
 import { UsuariosResponse } from './entities/usuario-analytics.entity';
 import { KmeansData } from './entities/kmeans-data.entity';
@@ -25,7 +26,7 @@ export class AnalyticsResolver {
     return this.analyticsService.getUserKmeansData(userId);
   }
 
-  @Query(() => String, { name: 'respuestasByUsuarioEncuesta' })
+  @Query(() => GraphQLJSONObject, { name: 'respuestasByUsuarioEncuesta' })
   getRespuestasByUsuarioEncuesta(
     @Args('userId') userId: string,
     @Args('encuestaId') encuestaId: string
@@ -38,7 +39,7 @@ export class AnalyticsResolver {
     return this.analyticsService.getUsuarioEncuestas(userId);
   }
 
-  @Query(() => [RespuestaAnalytics], { name: 'respuestasCompletar' })
+  @Query(() => GraphQLJSONObject, { name: 'respuestasCompletar', nullable: true })
   getRespuestasCompletar(
     @Args('userId', { nullable: true }) userId?: string,
     @Args('encuestaId', { nullable: true }) encuestaId?: string
@@ -46,12 +47,12 @@ export class AnalyticsResolver {
     return this.analyticsService.getRespuestasCompletar(userId, encuestaId);
   }
 
-  @Query(() => [RespuestaAnalytics], { name: 'respuestasCompletarByCampana' })
+  @Query(() => GraphQLJSONObject, { name: 'respuestasCompletarByCampana', nullable: true })
   getRespuestasCompletarByCampana(@Args('campanaId') campanaId: string) {
     return this.analyticsService.getRespuestasCompletarByCampana(campanaId);
   }
 
-  @Query(() => String, { name: 'respuestasOpcionesByCampana' })
+  @Query(() => GraphQLJSONObject, { name: 'respuestasOpcionesByCampana', nullable: true })
   getRespuestasOpcionesByCampana(@Args('campanaId') campanaId: string) {
     return this.analyticsService.getRespuestasOpcionesByCampana(campanaId);
   }

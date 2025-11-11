@@ -14,9 +14,6 @@ export class Destinatario {
   @Field({ nullable: true })
   email?: string;
 
-  @Field()
-  creado_en: Date;
-
   @Field({ nullable: true })
-  actualizado_en?: Date;
+  user_id?: string;
 }
