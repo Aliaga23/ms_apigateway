@@ -1,0 +1,457 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type AnomalyResult {
+  anomaly_score: Float!
+  is_anomaly: Boolean!
+  pregunta_texto: String
+  respuesta_id: String!
+  texto_respuesta: String!
+}
+
+type Campana {
+  actualizado_en: DateTime
+  creado_en: DateTime!
+  id: ID!
+  nombre: String!
+}
+
+type Canal {
+  id: ID!
+  nombre: String!
+}
+
+input ChatbotRequestInput {
+  message: String!
+  sessionId: String
+}
+
+type ChatbotResponse {
+  data: String
+  message: String!
+  success: Boolean!
+}
+
+type ClassificationResult {
+  categoria_predicha: String!
+  confianza: Float!
+  pregunta_texto: String
+  respuesta_id: String!
+  sentimiento: String!
+  sentimiento_score: Float!
+  texto_respuesta: String!
+}
+
+type ClusterAnalysis {
+  id: Int!
+  interpretacion: String!
+  nombre_ejecutivo: String!
+  promedio_general: Float!
+  tamano: Int!
+}
+
+input CreateCampanaInput {
+  nombre: String!
+}
+
+input CreateCanalInput {
+  nombre: String!
+}
+
+input CreateDestinatarioInput {
+  email: String
+  nombre: String!
+  telefono: String
+}
+
+input CreateEncuestaInput {
+  activo: Boolean! = true
+  campanaId: String
+  canalId: String
+  descripcion: String
+  nombre: String!
+}
+
+input CreateEntregaInput {
+  destinatarioId: String!
+  encuestaId: String!
+  enviado_en: String
+  respondido_en: String
+}
+
+input CreateOpcionEncuestaInput {
+  preguntaId: String!
+  texto: String!
+  valor: String
+}
+
+input CreatePlanInput {
+  descripcion: String!
+  nombre: String!
+  precio: Float!
+}
+
+input CreatePreguntaInput {
+  encuestaId: String!
+  obligatorio: Boolean!
+  orden: Int!
+  texto: String!
+  tipo_preguntaId: String!
+}
+
+input CreateRespuestaInput {
+  entregaId: String!
+  numero: Int
+  opcionEncuestaId: String
+  preguntaId: String!
+  recibido_en: String
+  texto: String
+}
+
+input CreateSuscripcionInput {
+  plan_id: String!
+  usuario_id: String!
+}
+
+input CreateTipoPreguntaInput {
+  nombre: String!
+}
+
+input CreateUsuarioInput {
+  email: String!
+  nombre: String!
+  password: String!
+  telefono: String
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Destinatario {
+  actualizado_en: DateTime
+  creado_en: DateTime!
+  email: String
+  id: ID!
+  nombre: String!
+  telefono: String
+}
+
+type Encuesta {
+  activo: Boolean!
+  actualizado_en: DateTime
+  campanaId: String
+  canalId: String
+  creado_en: DateTime!
+  descripcion: String
+  id: ID!
+  nombre: String!
+  usuarioId: String!
+}
+
+type EncuestaAnalytics {
+  activo: Boolean!
+  campana: String
+  canal: String
+  descripcion: String
+  encuesta_id: String!
+  nombre: String!
+  total_preguntas: Int!
+}
+
+type Entrega {
+  actualizado_en: DateTime
+  creado_en: DateTime!
+  destinatarioId: String!
+  encuestaId: String!
+  enviado_en: DateTime
+  id: ID!
+  respondido_en: DateTime
+}
+
+type GPTAnalysisResult {
+  clustering: String!
+  gpt_analysis: String
+  gpt_error: String
+  note: String
+}
+
+type KMeansResult {
+  categoria_encuesta: String!
+  cluster_analysis: [ClusterAnalysis!]!
+  n_clusters: Int!
+  silhouette_score: Float!
+}
+
+type KmeansData {
+  categorias: String!
+  encuestas: String!
+  estadisticas: String!
+  usuario: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+type LoginResponse {
+  token: String!
+  usuario: Usuario!
+}
+
+type Mutation {
+  analyzeCompleteWithGPT(surveyData: String!): GPTAnalysisResult!
+  analyzeKMeans(surveyData: String!): KMeansResult!
+  analyzeText(respuestas: [TextResponseInput!]!): TextAnalysisResult!
+  cancelSuscripcion(id: String!): Boolean!
+  createCampana(createCampanaInput: CreateCampanaInput!): Campana!
+  createCanal(createCanalInput: CreateCanalInput!): Canal!
+  createDestinatario(createDestinatarioInput: CreateDestinatarioInput!): Destinatario!
+  createEncuesta(createEncuestaInput: CreateEncuestaInput!): Encuesta!
+  createEntrega(createEntregaInput: CreateEntregaInput!): Entrega!
+  createOpcionEncuesta(createOpcionEncuestaInput: CreateOpcionEncuestaInput!): OpcionEncuesta!
+  createPlan(createPlanInput: CreatePlanInput!): Plan!
+  createPregunta(createPreguntaInput: CreatePreguntaInput!): Pregunta!
+  createRespuesta(createRespuestaInput: CreateRespuestaInput!): Respuesta!
+  createSuscripcion(createSuscripcionInput: CreateSuscripcionInput!): Suscripcion!
+  createTipoPregunta(createTipoPreguntaInput: CreateTipoPreguntaInput!): TipoPregunta!
+  deleteCanal(id: String!): Boolean!
+  deleteChatbotSession(sessionId: String!): ChatbotResponse!
+  deletePlan(id: String!): Boolean!
+  deleteTipoPregunta(id: String!): Boolean!
+  deleteUsuario(id: String!): Boolean!
+  login(loginInput: LoginInput!): LoginResponse!
+  predictText(texto: String!): String!
+  register(createUsuarioInput: CreateUsuarioInput!): Usuario!
+  removeCampana(id: String!): Boolean!
+  removeDestinatario(id: String!): Boolean!
+  removeEncuesta(id: String!): Boolean!
+  removeEntrega(id: String!): Boolean!
+  removeOpcionEncuesta(id: String!): Boolean!
+  removePregunta(id: String!): Boolean!
+  removeRespuesta(id: String!): Boolean!
+  resetTextModel: String!
+  sendChatbotMessage(input: ChatbotRequestInput!): ChatbotResponse!
+  trainTextModel(respuestas: [TextResponseInput!]!): String!
+  updateCampana(id: String!, updateCampanaInput: UpdateCampanaInput!): Campana!
+  updateCanal(id: String!, updateCanalInput: UpdateCanalInput!): Canal!
+  updateDestinatario(id: String!, updateDestinatarioInput: UpdateDestinatarioInput!): Destinatario!
+  updateEncuesta(id: String!, updateEncuestaInput: UpdateEncuestaInput!): Encuesta!
+  updateEntrega(id: String!, updateEntregaInput: UpdateEntregaInput!): Entrega!
+  updateOpcionEncuesta(id: String!, updateOpcionEncuestaInput: UpdateOpcionEncuestaInput!): OpcionEncuesta!
+  updatePlan(id: String!, updatePlanInput: UpdatePlanInput!): Boolean!
+  updatePregunta(id: String!, updatePreguntaInput: UpdatePreguntaInput!): Pregunta!
+  updateRespuesta(id: String!, updateRespuestaInput: UpdateRespuestaInput!): Respuesta!
+  updateTipoPregunta(id: String!, updateTipoPreguntaInput: UpdateTipoPreguntaInput!): TipoPregunta!
+  updateUsuario(id: String!, updateUsuarioInput: UpdateUsuarioInput!): Boolean!
+}
+
+type OpcionEncuesta {
+  actualizado_en: DateTime
+  creado_en: DateTime!
+  id: ID!
+  preguntaId: String!
+  texto: String!
+  valor: String
+}
+
+type Plan {
+  activo: Boolean!
+  creado_en: DateTime!
+  descripcion: String!
+  id: ID!
+  nombre: String!
+  precio: Float!
+}
+
+type Pregunta {
+  actualizado_en: DateTime
+  creado_en: DateTime!
+  encuestaId: String!
+  id: ID!
+  obligatorio: Boolean!
+  orden: Int!
+  texto: String!
+  tipo_preguntaId: String!
+}
+
+type PreguntaEncuestaAnalytics {
+  encuesta: String!
+}
+
+type Query {
+  analyticsUsuarios: UsuariosResponse!
+  campana(id: String!): Campana!
+  campanas: [Campana!]!
+  canal(id: String!): Canal!
+  canales: [Canal!]!
+  destinatario(id: String!): Destinatario!
+  destinatarios: [Destinatario!]!
+  encuesta(id: String!): Encuesta!
+  encuestas: [Encuesta!]!
+  entrega(id: String!): Entrega!
+  entregas: [Entrega!]!
+  misSuscripciones(limit: Float! = 10, page: Float! = 1): [Suscripcion!]!
+  mlHealthCheck: String!
+  opcionEncuesta(id: String!): OpcionEncuesta!
+  opcionesEncuesta: [OpcionEncuesta!]!
+  perfil: Usuario!
+  plan(id: String!): Plan!
+  planes(limit: Float! = 10, page: Float! = 1, showInactive: Boolean! = false): [Plan!]!
+  planesActivos(limit: Float! = 10, page: Float! = 1): [Plan!]!
+  pregunta(id: String!): Pregunta!
+  preguntaEncuesta(preguntaId: String!): PreguntaEncuestaAnalytics!
+  preguntas: [Pregunta!]!
+  preguntasByEncuesta(encuestaId: String!): [Pregunta!]!
+  respuesta(id: String!): Respuesta!
+  respuestas: [Respuesta!]!
+  respuestasByUsuarioEncuesta(encuestaId: String!, userId: String!): String!
+  respuestasCompletar(encuestaId: String, userId: String): [RespuestaAnalytics!]!
+  respuestasCompletarByCampana(campanaId: String!): [RespuestaAnalytics!]!
+  respuestasOpcionesByCampana(campanaId: String!): String!
+  suscripcion(id: String!): Suscripcion!
+  suscripciones(limit: Float! = 10, page: Float! = 1): [Suscripcion!]!
+  textModelStatus: String!
+  tipoPregunta(id: String!): TipoPregunta!
+  tiposPreguntas: [TipoPregunta!]!
+  userKmeansData(userId: String!): KmeansData!
+  usuario(id: String!): Usuario!
+  usuarioEncuestas(userId: String!): [EncuestaAnalytics!]!
+  usuarios(limit: Float! = 10, page: Float! = 1): [Usuario!]!
+}
+
+type Respuesta {
+  actualizado_en: DateTime
+  creado_en: DateTime!
+  entregaId: String!
+  id: ID!
+  numero: Int
+  opcionEncuestaId: String
+  preguntaId: String!
+  recibido_en: DateTime!
+  texto: String
+}
+
+type RespuestaAnalytics {
+  encuesta_nombre: String!
+  pregunta_texto: String!
+  respuesta_id: String!
+  texto_respuesta: String
+  user_id: String!
+}
+
+type Suscripcion {
+  creado_en: DateTime!
+  estado: String!
+  fecha_fin: DateTime
+  fecha_inicio: DateTime!
+  id: ID!
+  plan_id: String!
+  usuario_id: String!
+}
+
+type TextAnalysisResult {
+  anomalias: [AnomalyResult!]!
+  anomalias_detectadas: Int!
+  categorias_encontradas: String!
+  ejemplos_por_categoria: [ClassificationResult!]!
+  sentimiento_por_categoria: String!
+  sentimiento_resumen: String!
+  total_respuestas: Int!
+}
+
+input TextResponseInput {
+  pregunta_texto: String
+  respuesta_id: String!
+  texto_respuesta: String!
+}
+
+type TipoPregunta {
+  id: ID!
+  nombre: String!
+}
+
+input UpdateCampanaInput {
+  nombre: String
+}
+
+input UpdateCanalInput {
+  nombre: String
+}
+
+input UpdateDestinatarioInput {
+  email: String
+  nombre: String
+  telefono: String
+}
+
+input UpdateEncuestaInput {
+  activo: Boolean
+  campanaId: String
+  canalId: String
+  descripcion: String
+  nombre: String
+}
+
+input UpdateEntregaInput {
+  enviado_en: String
+  respondido_en: String
+}
+
+input UpdateOpcionEncuestaInput {
+  texto: String
+  valor: String
+}
+
+input UpdatePlanInput {
+  activo: Boolean
+  descripcion: String
+  nombre: String
+  precio: Float
+}
+
+input UpdatePreguntaInput {
+  obligatorio: Boolean
+  orden: Int
+  texto: String
+}
+
+input UpdateRespuestaInput {
+  numero: Int
+  texto: String
+}
+
+input UpdateTipoPreguntaInput {
+  nombre: String
+}
+
+input UpdateUsuarioInput {
+  nombre: String
+  telefono: String
+}
+
+type Usuario {
+  creado_en: DateTime!
+  email: String!
+  es_admin: Boolean!
+  estado: Boolean!
+  id: ID!
+  nombre: String!
+  telefono: String!
+}
+
+type UsuarioAnalytics {
+  email: String!
+  nombre: String!
+  total_encuestas: Int!
+  total_respuestas: Int!
+  usuario_id: String!
+}
+
+type UsuariosResponse {
+  total_usuarios: Int!
+  usuarios: [UsuarioAnalytics!]!
+}
