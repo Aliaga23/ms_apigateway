@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sw2p2-gateway
+  namespace: default
+  labels:
+    app: sw2p2-gateway
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sw2p2-gateway
+  template:
+    metadata:
+      labels:
+        app: sw2p2-gateway
+    spec:
+      containers:
+      - name: sw2p2-gateway
+        image: 528961352146.dkr.ecr.us-east-1.amazonaws.com/sw2p2-gateway:latest
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: sw2p2-gateway-config
+        - secretRef:
+            name: sw2p2-gateway-secret
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+      imagePullSecrets:
+      - name: ecr-registry-secret

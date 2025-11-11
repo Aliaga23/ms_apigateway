@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sw2p2-gateway-config
+  namespace: default
+data:
+  PORT: "3000"
+  MS_MONGO_URL: "https://usuario.sw2ficct.lat/api/v1"
+  MS_NEST_URL: "https://encuestas.sw2ficct.lat"
+  MS_PYTHON_URL: "https://mlearning.sw2ficct.lat"
+  NODE_ENV: "production"

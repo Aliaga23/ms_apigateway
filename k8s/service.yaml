@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sw2p2-gateway-service
+  namespace: default
+  labels:
+    app: sw2p2-gateway
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-ssl-cert: arn:aws:acm:us-east-1:528961352146:certificate/fc24bb18-37c7-4026-b734-f0ae73e945f2
+    service.beta.kubernetes.io/aws-load-balancer-backend-protocol: http
+    service.beta.kubernetes.io/aws-load-balancer-ssl-ports: "443"
+spec:
+  type: LoadBalancer
+  selector:
+    app: sw2p2-gateway
+  ports:
+  - port: 443
+    targetPort: 3000
+    protocol: TCP
+    name: https
+  - port: 80
+    targetPort: 3000
+    protocol: TCP
+    name: http
+  sessionAffinity: None
